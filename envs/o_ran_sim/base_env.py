@@ -1,6 +1,5 @@
 # envs/o_ran_sim/base_env.py
 # Multi-agent Open RAN simulator env (UE/gNB/RIC view)
-# 근거: Fig.1 파이프라인, 식(1)~(10), 표 I~III (p.3~5)
 
 from __future__ import annotations
 from dataclasses import dataclass, field
