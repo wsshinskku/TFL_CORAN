@@ -1,0 +1,31 @@
+# 실환경(O-RAN) 연동 시 네트워크 엔드포인트/보안/전송 모드
+env:
+  mode: "o_ran"
+  # gNB/RIC 간 메시지 버스 (예: gRPC/ZeroMQ; 실제 주소는 환경에 맞게)
+  transport:
+    protocol: "grpc"
+    ric_endpoint: "dns:///ric.example:50051"
+    gnb_bind_addr: "0.0.0.0:60051"
+    tls:
+      enabled: true
+      ca_cert: "secrets/ca.pem"
+      client_cert: "secrets/client.pem"
+      client_key: "secrets/client.key"
+  # 실망 연계 시 시뮬레이터 특정 컴포넌트 비활성화
+  scheduler:
+    harq_like_retx: false
+    sinr_to_mcs_table: null
+
+privacy:
+  # 운영망에서는 원시 x_i 유출 방지를 위해 z_i만 전송 권장
+  send_embeddings_only: true
+
+logging:
+  level: "WARN"
+  tensorboard: false
+  csv: true
+
+paths:
+  vgae_checkpoint: "/opt/tfl-coran/checkpoints/vgae_encoder.pt"
+  cluster_models_dir: "/opt/tfl-coran/cluster_models"
+  logs_dir: "/var/log/tfl-coran"
