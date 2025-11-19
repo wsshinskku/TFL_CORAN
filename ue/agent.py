@@ -153,7 +153,7 @@ class DDQNAgent:
         return logs
 
     def end_episode(self):
-        """에피소드 종료 시 호출. 타깃 네트 업데이트 스케줄(표 I에 따라 10 에피소드)
+        """에피소드 종료 시 호출. 타깃 네트 업데이트 스케줄"""
         self._episode_idx += 1
         if (self._episode_idx % self.cfg.target_update_episodes) == 0:
             self.target.load_state_dict(self.online.state_dict())
@@ -184,5 +184,5 @@ class DDQNAgent:
         return delta
 
     def accept_broadcast_and_reset_delta(self, new_personalized: Dict[str, torch.Tensor]):
-        """RIC 개인화 모델 수신 후, 기준선 갱신."""
+        #RIC 개인화 모델 수신 후, 기준선 갱신.
         self.load_weights(new_personalized, set_as_broadcast_baseline=True)
