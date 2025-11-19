@@ -1,6 +1,5 @@
 # data/generate_sinr_mcs_table.py
 # env에서 사용할 SINR→MCS 매핑 테이블(간이)을 CSV로 생성합니다.
-# 실제 표준/벤더 테이블이 있다면 그 파일을 data/tables/sinr_mcs.csv 로 교체하세요.  :contentReference[oaicite:17]{index=17}
 import os
 import csv
 
