@@ -1,5 +1,5 @@
 # envs/o_ran_sim/mobility.py
-# Mobility model p(t+1)=p(t)+v(t)d(t), Voronoi handovers (Sec. II). :contentReference[oaicite:3]{index=3}
+# Mobility model p(t+1)=p(t)+v(t)d(t), Voronoi handovers (Sec. II)
 from __future__ import annotations
 import numpy as np
 from typing import Tuple, List
