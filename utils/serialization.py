@@ -91,3 +91,13 @@ def save_full_checkpoint(
     with open(os.path.join(ckpt_dir, "meta.json"), "w", encoding="utf-8") as f:
         json.dump(meta, f, ensure_ascii=False, indent=2)
     return ckpt_dir
+
+# --- Compatibility wrappers for tests ---
+def save_state_dict(state: Dict[str, torch.Tensor], path: str):
+    """Compatibility wrapper for tests."""
+    save_agent_weights(state, path)
+
+def load_state_dict(path: str, map_location: str = "cpu") -> Dict[str, torch.Tensor]:
+    """Compatibility wrapper for tests."""
+    return load_agent_weights(path, device=map_location)
+
