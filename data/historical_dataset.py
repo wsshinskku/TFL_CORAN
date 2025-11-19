@@ -1,6 +1,6 @@
 # data/historical_dataset.py
-# 오프라인 VGAE 학습(식 (4))을 위한 그래프 스냅샷 데이터셋.
-# 각 스냅샷은 SITM 행렬 X[N,4]와 유사도 인접행렬 A(N,N)를 포함합니다(식 (1)).  :contentReference[oaicite:12]{index=12}
+# 오프라인 VGAE 학습을 위한 그래프 스냅샷 데이터셋.
+# 각 스냅샷은 SITM 행렬 X[N,4]와 유사도 인접행렬 A(N,N)를 포함합니다
 from __future__ import annotations
 from dataclasses import dataclass
 from typing import List, Tuple, Dict, Optional
