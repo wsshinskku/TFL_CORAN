@@ -1,1 +1,124 @@
+# 전역 기본 설정 (논문 기본값 기반)
+# 표 I/II/III 및 섹션 IV-A를 반영한 값들입니다.
+cfg_version: 1
+run:
+  seed: 42
+  device: "cuda"            # "cpu" 로 변경 가능
+  run_name: "tfl_coran_default"
+  output_dir: "runs/${run.run_name}"
+  deterministic: false
+
+logging:
+  level: "INFO"
+  tensorboard: true
+  csv: true
+  save_every_round: 1        # FL 라운드마다 체크포인트 저장
+
+paths:
+  vgae_checkpoint: "data/checkpoints/vgae_encoder.pt"
+  cluster_models_dir: "data/checkpoints/cluster_models"
+  logs_dir: "runs/${run.run_name}/logs"
+
+# 네트워크 토폴로지 및 무선 자원 (섹션 IV-A, 표 III)
+topology:
+  cells: 3
+  isd_m: 500
+  ue_counts:
+    urban: 150
+    commercial: 120
+    school: 105
+
+carrier:
+  center_freq_ghz: 3.5
+  bandwidth_mhz: 100
+  n_subbands: 6              # Ncf = 6
+
+# 다중 시간척도 (표 II/III)
+time_scales:
+  episode_len: 200           # L = 200 슬롯
+  tau_E: 5                   # FL 매 τE 에피소드마다 1회
+  tau_F: 10                  # 기본: 10 FL 라운드마다 임베딩/클러스터 리프레시 (표 II)
+  warmup_episodes: 0
+
+# 모델/알고리즘 설정
+models:
+  vgae:
+    in_dim: 4                # x_i = [S, I, T, M]
+    gcn_dims: [64, 32]       # 표 II/III
+    latent_dim: 32
+  gmm:
+    K: 3
+    covariance_type: "full"
+    max_iter: 100
+    tol: 1.0e-3
+    reg_covar: 1.0e-6
+  ddqn:
+    lr: 1.0e-3
+    gamma: 0.99
+    batch_size: 64
+    target_update_episodes: 10
+    replay_capacity: 100000
+    epsilon:
+      start: 1.0
+      end: 0.01
+      decay_episodes: 100
+    optimizer: "adam"
+    grad_clip_norm: 10.0
+
+# 연합 집계 및 개인화 (식 (9)(10))
+fl:
+  aggregator: "membership_weighted"   # "fedavg" | "hard_cluster" | "membership_weighted"
+  weight_dtype: "fp32"
+  fuse_personalized: true
+  clip_delta_global_norm: 100.0
+  # 클러스터별 모델 스냅샷 유지 개수
+  keep_last_cluster_models: 5
+
+# 전이 초기화 (섹션 III-D.3)
+transfer:
+  enabled: true
+  delta: 0.5                   # w^0_i = δ w_prev + (1-δ) w_{j*}
+  neighbor_pool_size: 32
+  similarity: "cosine"         # "cosine" | "euclidean"
+
+# 프라이버시/전송 모드 (섹션 II, III-A.2)
+privacy:
+  send_embeddings_only: false  # true면 gNB에서 z_i만 RIC로 전송
+  compress_updates:
+    enabled: false
+    bits: 8
+
+# 시뮬레이터/스케줄러/트래픽
+env:
+  mode: "sim"                  # "sim" | "o_ran"
+  mobility:
+    # p(t+1)=p(t)+v(t)d(t); v,d는 경계 내 난수 변동(섹션 II)
+    speed_mps: {min: 0.0, max: 5.0}
+    delta_v: 0.2
+    delta_dir_deg: 15
+    handover_on_boundary: true
+  traffic:
+    classes: ["eMBB","URLLC","mMTC"]
+    targets:                    # (R_tar, L_tar, η_tar)
+      eMBB: {rate_bps: 20000000, latency_s: 0.015, reliability: 0.99}
+      URLLC: {rate_bps: 10000000, latency_s: 0.005, reliability: 0.999}
+      mMTC: {rate_bps: 5000000,  latency_s: 0.010, reliability: 0.95}
+    new_activation_ratio_per_round: 0.03
+    reassignment_ratio_per_round: 0.10
+  scheduler:
+    # 서브밴드 경쟁/우선순위 기반 유틸리티 최대화(표 III 설명)
+    reuse_allowed: true
+    utility_weights:
+      priority: 1.0
+      predicted_rate: 1.0
+      qos_deficit: 1.0
+    harq_like_retx: true
+    sinr_to_mcs_table: "data/tables/sinr_mcs.csv"
+
+# 평가/리포트 (섹션 IV-B, 표 IV)
+evaluation:
+  metrics: ["qos_satisfaction","avg_throughput","avg_latency","adaptation_time"]
+  num_seeds: 5
+  report_dir: "runs/${run.run_name}/reports"
+  baselines: ["heuristic","drl","fdrl","cfdrl"]  # 비교군 실행 시 사용
 
