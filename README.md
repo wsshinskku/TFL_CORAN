@@ -1,7 +1,6 @@
 # TFL-CORAN: Transfer-Enhanced Federated Learning with Dynamic Clustering for 5G Open RAN
 
-> UE–gNB–RIC 3계층, **VGAE 임베딩** + **GMM 소프트 클러스터링** + **멤버십 가중 FL** + **전이 초기화**로
-> UE-레벨 트래픽 제어를 학습하는 프레임워크입니다. 식 (1)–(6), (9)–(10)과 표 I–III의 주기를 코드로 제공합니다.
+> UE–gNB–RIC 3계층, **VGAE 임베딩** + **GMM 소프트 클러스터링** + **멤버십 가중 FL** + **전이 초기화**로 UE-레벨 트래픽 제어를 학습하는 프레임워크입니다.
 
 - **논문 PDF**: [/mnt/data/TFL_CORAN.pdf](/mnt/data/TFL_CORAN.pdf)  
 - **구조**: UE(DDQN, 슬롯) → gNB(수집/중계) → RIC(VGAE 추론·GMM·FL 집계, 라운드).
