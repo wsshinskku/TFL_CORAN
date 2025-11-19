@@ -1,1 +1,17 @@
+# 시뮬레이터 모드 오버라이드
+env:
+  mode: "sim"
+  mobility:
+    speed_mps: {min: 0.0, max: 7.0}
+    delta_v: 0.3
+    delta_dir_deg: 20
+
+logging:
+  level: "INFO"
+
+privacy:
+  send_embeddings_only: false
+
+paths:
+  vgae_checkpoint: "data/checkpoints/vgae_encoder.pt"
 
