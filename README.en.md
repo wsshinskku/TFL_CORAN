@@ -2,97 +2,107 @@
 
 [한국어](README.md) | English
 
-This is the completed, executable release of the code accompanying
-**“Transfer-enhanced Federated Learning with Dynamic Clustering for Traffic
-Management in 5G Open RAN.”** It upgrades the original prototype by wiring UE
-DDQN, offline VGAE, soft GMM clustering, personalized federated aggregation,
-handover/new-UE transfer, baselines, ablations, metrics, tests and CI into one
-multi-timescale pipeline.
+TFL-CORAN is a federated reinforcement-learning framework for UE-level traffic control in 5G O-RAN. Each UE trains a local DDQN, while the non-RT RIC derives soft cluster memberships from VGAE embeddings and a GMM. Cluster and personalized models are aggregated at the RIC, and model transfer is used to initialize UEs after handover or activation.
 
-> **Scope:** this is an algorithmic and protocol reproduction. The manuscript
-> does not provide the channel/traffic traces, reliability targets, DDQN hidden
-> layers, full action grid or VGAE training data needed for exact Table 3/4
-> replication. Reported values and major implementation assumptions that can
-> affect results are marked in `configs/paper.yaml` and
-> `docs/ASSUMPTIONS.md`. The run's `resolved_config.yaml` is authoritative for
-> every effective value, including inherited defaults; generated metrics are
-> never presented as the paper's reported results.
+This repository contains the TFL-CORAN algorithms, simulation environment, baselines, ablations, and multi-seed evaluation scripts.
 
-## Quick start
+## Components
+
+- UE-local DDQN with online action selection and target-network evaluation
+- QoS reward: `reliability / target + throughput / target - latency / target`
+- SITM context: signal, interference, traffic load, and mobility
+- symmetric kNN graph and VGAE encoder
+- GMM soft memberships for clustered and personalized aggregation
+- destination-cell model transfer for handovers and newly activated UEs
+- separate slot, episode, FL-round, and cluster-refresh time scales
+- Heuristic, DRL, FDRL, CFDRL, and TFL-CORAN experiments
+
+See [`docs/ALGORITHM.md`](docs/ALGORITHM.md) for the equation-to-code mapping.
+
+## Installation
+
+Python 3.10 or later is recommended.
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 pip install -e '.[dev]'
-
 tfl-coran doctor
+```
+
+## Quick check
+
+`configs/smoke.yaml` exercises the complete pipeline with a small CPU configuration.
+
+```bash
 tfl-coran run -c configs/smoke.yaml -o runs/smoke
 pytest -q
 ```
 
-## Main commands
+A run writes the resolved configuration, environment metadata, historical contexts, VGAE loss, training and evaluation metrics, adaptation events, memberships, and model checkpoints.
+
+## Experiments
+
+The paper profile contains 375 UE-local learners. Estimate the workload before starting a full run.
 
 ```bash
-# Inspect full-profile work and memory scale
 tfl-coran estimate -c configs/paper.yaml
 
-# Train the offline graph encoder
-tfl-coran pretrain-vgae -c configs/paper.yaml -o runs/shared/vgae.pt
+tfl-coran pretrain-vgae \
+  -c configs/paper.yaml \
+  -o runs/shared/vgae.pt
 
-# Compare all paper baselines under one seed
-tfl-coran benchmark -c configs/paper_fast.yaml \
-  --methods heuristic drl fdrl cfdrl tfl_coran -o runs/benchmark
-
-# Run the paper component toggles
-tfl-coran ablate -c configs/paper_fast.yaml -o runs/ablation
-
-# Five-seed mean/std/95% CI workflow
-tfl-coran reproduce -c configs/paper.yaml \
+tfl-coran benchmark \
+  -c configs/paper.yaml \
   --methods heuristic drl fdrl cfdrl tfl_coran \
-  --seeds 0 1 2 3 4 -o runs/reproduction
+  --vgae-checkpoint runs/shared/vgae.pt \
+  -o runs/paper_seed42
 ```
 
-Each run writes its resolved configuration, software metadata, historical
-contexts, VGAE losses, training/evaluation CSVs, adaptation events, JSON
-summary and checkpoints. Adaptation reports completed-event time, completion
-rate, and a censor-aware horizon-penalized value.
+Use `configs/paper_fast.yaml` for a shorter functional run.
 
-## Implemented methods
+```bash
+tfl-coran ablate -c configs/paper_fast.yaml -o runs/ablation
+
+tfl-coran reproduce \
+  -c configs/paper.yaml \
+  --methods heuristic drl fdrl cfdrl tfl_coran \
+  --seeds 0 1 2 3 4 \
+  -o runs/reproduction
+```
+
+## Methods
 
 | Method | Definition |
 |---|---|
-| Heuristic | Non-learning SINR-binned-rate, service-priority and static round-robin frequency-spreading policy |
-| DRL | One shared DDQN and pooled replay |
-| FDRL | Per-UE DDQN with uniform memberships/FedAvg |
-| CFDRL | Hard GMM assignments and per-cluster aggregation |
-| TFL-CORAN | VGAE-GMM soft memberships, personalized FL and transfer |
+| Heuristic | SINR-based rate level, service priority, and round-robin subband assignment |
+| DRL | One shared DDQN with pooled UE transitions |
+| FDRL | UE-local DDQN with FedAvg |
+| CFDRL | Hard-cluster FL using the maximum GMM posterior |
+| TFL-CORAN | VGAE-GMM soft memberships, personalized FL, and model transfer |
 
-The manuscript does not define every substitute used when an ablation disables
-a component. This release fixes the interpretations as follows: Variant A
-disables transfer only; Variant B uses standardized raw context with GMM;
-Variant C uses VGAE embeddings with seeded deterministic hard KMeans; and
-Variant D uses uniform memberships/FedAvg. Transfer is disabled in A-D. The
-hard-KMeans choice for Variant C is an implementation interpretation, not a
-claim about an otherwise unspecified manuscript detail.
+The component ablations use the following rules:
 
-The representation graph starts with six directed nearest-neighbor queries per
-node and then takes a symmetric union. Its realized average and maximum degree
-can therefore exceed six; it approximates, but does not enforce, the
-manuscript's reported average degree of about six.
+- Variant A: transfer off, VGAE/GMM on
+- Variant B: GMM on standardized raw contexts
+- Variant C: deterministic hard KMeans on VGAE embeddings
+- Variant D: uniform memberships and FedAvg
 
-The default environment is a self-contained algorithmic simulator. It does not
-claim to be a hidden UERANSIM/Open5GS/QuaDRiGa integration. See
-`docs/EXTERNAL_SIMULATORS.md` for the adapter boundary and
-`THIRD_PARTY_NOTICES.md` for licensing.
+The manuscript does not specify replacement operations for every disabled component. The rules above define the implementation used by the ablation runner.
 
-## Documentation
+## Reproducibility
 
-- `docs/ALGORITHM.md`: equation-to-code mapping
-- `docs/ASSUMPTIONS.md`: reported values versus implementation choices
-- `docs/REPRODUCIBILITY.md`: multi-seed protocol and provenance
-- `VALIDATION.md`: release checks and scientific validation boundary
-- `MIGRATION.md`: changes from the earlier repository layout
-- `paper_reported/`: reference-only transcriptions of Tables 3 and 4
+The manuscript specifies the main equations, topology, and training cadence, but does not fix every channel, traffic, reliability, network, and action-space parameter required for an executable simulator. Parameters not fixed by the manuscript remain configurable. Their defaults and rationale are documented in [`configs/paper.yaml`](configs/paper.yaml) and [`docs/ASSUMPTIONS.md`](docs/ASSUMPTIONS.md). Each run writes the effective configuration to `resolved_config.yaml`.
+
+The values under `paper_reported/` are references transcribed from the manuscript tables and are not used as inputs to the experiments. Generated results are written under `runs/`. The original UERANSIM, Open5GS, and QuaDRiGa configurations and traces are not included; the default backend is therefore a self-contained Python simulator.
+
+See [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md) and [`VALIDATION.md`](VALIDATION.md) for the experiment protocol and test coverage.
+
+## External systems
+
+The telemetry schema and adapter boundary for external simulators or a testbed are documented in [`docs/EXTERNAL_SIMULATORS.md`](docs/EXTERNAL_SIMULATORS.md). UERANSIM, Open5GS, and QuaDRiGa are not vendored and remain subject to their own licenses; see [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
+
+## License
 
 MIT License, Copyright (c) 2025 Wooseok Daniel Shin.

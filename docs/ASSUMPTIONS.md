@@ -7,7 +7,7 @@ Additional simulator constants are inherited from `tfl_coran.config` defaults;
 the `resolved_config.yaml` written by every run is the complete, authoritative
 record of all effective values.
 
-| Item | Manuscript | This implementation |
+| Item | Manuscript | Default setting |
 |---|---|---|
 | Cells / population | 3; 150/120/105; ISD 500 m | Exact |
 | Carrier | 3.5 GHz, 100 MHz, 6 subbands | Exact |
@@ -32,7 +32,7 @@ record of all effective values.
 | Heuristic baseline | Service priority and SINR-based allocation are described; exact mapping is not reported | Static round-robin frequency spread, SINR-threshold rate bin, and service-class priority |
 | Ablation A | Transfer off; VGAE/GMM on | Same; no neighbor transfer |
 | Ablation B | Transfer/VGAE off; GMM on; no replacement representation specified | Standardized raw SITM context + GMM |
-| Ablation C | Transfer/GMM off; VGAE on; no replacement grouping specified | VGAE embedding + seeded deterministic hard KMeans; implementation interpretation |
+| Ablation C | Transfer/GMM off; VGAE on; no replacement grouping specified | VGAE embedding + seeded deterministic hard KMeans |
 | Ablation D | Transfer/VGAE/GMM off; aggregation fallback unspecified | Uniform memberships/FedAvg |
 | Transfer delta | Not reported | 0.5 for handover; effectively 0 for a brand-new UE |
 | New UE previous model | Undefined | Destination-cell neighbor, then global fallback |
@@ -41,7 +41,7 @@ record of all effective values.
 | QoS evaluation window | Not reported | Instantaneous slot condition, averaged over UE-slots |
 | Training duration | Not reported | 100 FL rounds / 500 episodes, inherited from the prototype README |
 
-These choices are suitable for algorithm testing, not evidence that the paper's
-reported numbers were independently reproduced. This table highlights
-result-sensitive choices; consult each run's resolved config for the exhaustive
+These choices support algorithm testing. Exact numerical comparison with the
+paper requires the original traces and simulator parameters. This table lists
+the result-sensitive choices; each run's resolved config contains the complete
 effective configuration.

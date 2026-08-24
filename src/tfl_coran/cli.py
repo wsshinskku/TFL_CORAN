@@ -169,7 +169,9 @@ def command_estimate(args: argparse.Namespace) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="tfl-coran", description="TFL-CORAN reproducibility toolkit")
+    parser = argparse.ArgumentParser(
+        prog="tfl-coran", description="TFL-CORAN experiments for 5G O-RAN traffic control"
+    )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     doctor = subparsers.add_parser("doctor", help="show dependency and accelerator status")

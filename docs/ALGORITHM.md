@@ -42,7 +42,7 @@ TFL-CORAN keeps them soft. For the Table 4 component ablations, A retains
 VGAE+GMM without transfer, B fits GMM to standardized raw context, C replaces
 the disabled GMM with seeded deterministic hard KMeans over VGAE embeddings,
 and D uses uniform memberships/FedAvg. The manuscript does not specify the
-replacement grouping for C, so hard KMeans is an implementation interpretation.
+replacement grouping for C; this code uses hard KMeans.
 
 ## Federated learning and transfer
 

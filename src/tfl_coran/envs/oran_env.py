@@ -54,9 +54,8 @@ class ActionCodec:
 class OranTrafficEnv:
     """Lightweight multi-cell O-RAN simulator matching the paper's control interface.
 
-    It is intentionally self-contained. UERANSIM/Open5GS/QuaDRiGa traces can be
-    adapted through the same state/context API, while this backend keeps CI and
-    algorithmic reproduction runnable on a laptop.
+    The default backend is self-contained. UERANSIM, Open5GS, or QuaDRiGa traces
+    can be connected through the same state and context API.
     """
 
     state_dim = 9

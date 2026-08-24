@@ -1,9 +1,10 @@
-# Manuscript-reported reference values
+# Reference values reported in the paper
 
-These CSV files transcribe Tables 3 and 4 from the supplied manuscript. They
-are reference data only and are never loaded as generated experiment results.
-No claim is made that `tfl_coran` reproduces these values without the original
-external traces and omitted settings.
+`table3.csv` and `table4.csv` contain transcriptions of Tables 3 and 4 from the
+May 2026 manuscript revision. They are reference values and are not loaded by
+the experiment pipeline. Exact numerical comparison requires the original
+channel and traffic traces together with simulator settings not specified in
+the paper.
 
 ## Provenance
 
@@ -13,5 +14,4 @@ external traces and omitted settings.
 - `table3.csv`: Table 3, PDF page 11
 - `table4.csv`: Table 4, PDF page 12
 
-The source PDF is intentionally not bundled with the MIT-licensed software.
-Verify publication and sharing rights separately before distributing it.
+The manuscript PDF is not distributed with this repository.

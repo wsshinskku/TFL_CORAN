@@ -60,8 +60,8 @@ adaptation is finalized from the training window, while headline evaluation is
 deterministic and frozen. Always report completion rate and the censor-aware
 horizon-penalized value alongside the completed-event adaptation mean.
 
-Do not compare one smoke run as evidence of superiority. Use multiple seeds and
-report variance/censoring. The paper's Table 3 averages are internally not all
+The smoke profile is intended for functional checks. Quantitative comparisons
+should use multiple seeds and report variance and censoring. The paper's Table 3 averages are not all
 recoverable from displayed subgroup rows, so this code uses transparent
 UE-slot weighted reductions.
 

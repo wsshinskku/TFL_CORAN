@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "tfl-coran"
 version = "1.0.0"
-description = "Complete algorithmic reproduction toolkit for TFL-CORAN in 5G Open RAN"
+description = "Transfer-enhanced federated learning with dynamic clustering for traffic management in 5G Open RAN"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"

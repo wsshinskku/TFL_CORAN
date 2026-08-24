@@ -1,4 +1,4 @@
-"""TFL-CORAN: an independent, executable reproduction of the paper framework."""
+"""TFL-CORAN federated reinforcement learning for 5G O-RAN traffic control."""
 
 from .config import load_config, load_configs
 
