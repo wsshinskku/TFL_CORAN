@@ -1,0 +1,6 @@
+scheme,transfer,vgae,gmm,qos_pct,throughput_mbps,adaptation_s
+TFL-CORAN,true,true,true,87.4,23.290,3.201
+Variant A,false,true,true,83.0,22.124,5.672
+Variant B,false,false,true,82.0,21.932,6.200
+Variant C,false,true,false,81.5,21.641,6.012
+Variant D,false,false,false,78.0,21.312,5.836

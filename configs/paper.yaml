@@ -1,0 +1,117 @@
+# Paper-aligned profile. Values explicitly marked ASSUMED are not specified
+# in the manuscript and can materially change numerical results.
+seed: 42
+method: tfl_coran
+device: auto
+
+environment:
+  # REPORTED: Table 2 / Sections 4-5
+  cell_ue_counts: [150, 120, 105]
+  cell_labels: [urban, commercial, school]
+  inter_site_distance_m: 500.0
+  carrier_frequency_ghz: 3.5
+  bandwidth_mhz: 100.0
+  subbands: 6
+  episode_slots: 200
+  # ASSUMED: slot duration, scheduler multiplexing, RF/noise, queue model
+  slot_duration_ms: 1.0
+  max_ues_per_subband: 8
+  tx_power_dbm: 46.0
+  noise_figure_db: 7.0
+  max_latency_ms: 100.0
+  max_queue_mbit: 2.0
+  service_distribution: [0.34, 0.33, 0.33]
+  new_service_assignment: balanced  # REPORTED: activations are evenly split by class.
+  service_targets:
+    # Throughput/latency are REPORTED; reliability targets are ASSUMED.
+    embb: {throughput_mbps: 20.0, latency_ms: 15.0, reliability: 0.95}
+    urllc: {throughput_mbps: 10.0, latency_ms: 5.0, reliability: 0.999}
+    mmtc: {throughput_mbps: 5.0, latency_ms: 10.0, reliability: 0.90}
+  # ASSUMED traffic and zone mobility ranges.
+  arrival_rate_mbps: {embb: 24.0, urllc: 12.0, mmtc: 6.0}
+  speed_mps:
+    urban: [3.0, 16.0]
+    commercial: [1.0, 8.0]
+    school: [0.2, 3.0]
+  # ASSUMED synthetic channel. The manuscript names QuaDRiGa but does not
+  # release a scenario file, antenna setup, channel trace, or BLER curve.
+  channel_model:
+    path_loss_distance_coefficient: 30.0
+    shadowing_std_db: 4.0
+    spectral_efficiency_max: 7.4
+    multiuser_penalty_db_per_doubling: 1.8
+    fast_fading_log_mean: -0.04
+    fast_fading_log_sigma: 0.16
+    bler_thresholds_db: [-1.0, 5.0, 11.0]
+    bler_slope_db: 1.6
+  # ASSUMED scheduler formula/weights; predicted SINR rate is included because
+  # Section 5.1 describes SINR-to-MCS/TBS-aware contention resolution.
+  scheduler_model:
+    rate_factors: [0.60, 0.82, 1.0]
+    priority_weight: 1.6
+    predicted_rate_weight: 1.0
+    queue_weight: 1.0
+    service_bias: {embb: 0.45, urllc: 1.0, mmtc: 0.25}
+    sharing_latency_penalty_ms: 0.15
+    unscheduled_latency_penalty_ms: 2.0
+  # ASSUMED packet-arrival variation and non-radio base latency.
+  traffic_model:
+    arrival_log_mean: -0.03
+    arrival_log_sigma: 0.25
+    base_latency_ms: {embb: 3.0, urllc: 1.0, mmtc: 4.0}
+
+agent:
+  # lr/gamma/batch/target/replay/epsilon/Adam are REPORTED.
+  learning_rate: 0.001
+  discount: 0.99
+  batch_size: 64
+  target_update_episodes: 10
+  replay_capacity: 100000
+  epsilon_start: 1.0
+  epsilon_end: 0.01
+  # ASSUMED network shape, decay horizon, warmup/update count, gradient clip.
+  hidden_dims: [128, 128]
+  epsilon_decay_episodes: 100
+  warmup_steps: 128
+  gradient_steps_per_slot: 1
+  max_grad_norm: 10.0
+
+vgae:
+  # GCN 64/32 and latent 32 are REPORTED; training settings are ASSUMED.
+  hidden_dim: 64
+  latent_dim: 32
+  epochs: 100
+  learning_rate: 0.01
+  snapshots: 12
+  graph_neighbors: 6
+  kl_weight: 1.0
+
+gmm:
+  clusters: 3
+  # Remaining EM choices are ASSUMED.
+  covariance_type: full
+  max_iter: 100
+  reg_covar: 0.000001
+  n_init: 3
+
+federation:
+  episodes_per_round: 5
+  cluster_refresh_rounds: 10
+  handover_fraction: 0.10
+  new_ue_fraction: 0.03
+  # ASSUMED. dispatch_base resolves the paper's personalized-delta ambiguity.
+  transfer_delta: 0.5
+  delta_reference: dispatch_base
+  sync_target_on_dispatch: false
+  reset_optimizer_on_dispatch: false
+
+experiment:
+  # ASSUMED: the manuscript omits total rounds; 100 FL rounds follows the
+  # prototype README (100 rounds x 5 episodes = 500 episodes).
+  episodes: 500
+  evaluation_episodes: 3
+  adaptation_consecutive_slots: 3
+  checkpoint_every_rounds: 5
+  save_client_models: false
+
+toggles: {transfer: true, vgae: true, gmm: true}

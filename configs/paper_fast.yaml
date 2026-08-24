@@ -1,0 +1,32 @@
+# Laptop demonstration: preserves the three zone proportions and algorithm,
+# but intentionally reduces population, slots, rounds, buffer, and VGAE work.
+seed: 42
+method: tfl_coran
+device: auto
+environment:
+  cell_ue_counts: [30, 24, 21]
+  cell_labels: [urban, commercial, school]
+  episode_slots: 50
+agent:
+  hidden_dims: [64, 64]
+  batch_size: 32
+  replay_capacity: 5000
+  warmup_steps: 32
+  epsilon_decay_episodes: 10
+vgae:
+  hidden_dim: 32
+  latent_dim: 16
+  epochs: 10
+  snapshots: 6
+  graph_neighbors: 6
+gmm:
+  clusters: 3
+  covariance_type: diag
+  n_init: 1
+federation:
+  episodes_per_round: 2
+  cluster_refresh_rounds: 2
+experiment:
+  episodes: 6
+  evaluation_episodes: 1
+  checkpoint_every_rounds: 1

@@ -1,18 +1,29 @@
-# tests/test_transfer.py
 import numpy as np
+import pytest
 import torch
-from ric.transfer import warm_start_from_neighbors
 
-def _w(v): return {"w": torch.tensor(v, dtype=torch.float32)}
+from tfl_coran.transfer import transfer_initialize
 
-def test_transfer_warm_start_chooses_most_similar_and_fuses():
-    x_i = np.array([1.0, 0.0, 0.0, 0.0], dtype=np.float32)
-    neighbor_feats = {
-        "a": np.array([1.0, 0.1, 0.0, 0.0], dtype=np.float32),
-        "b": np.array([-1.0, 0.0, 0.0, 0.0], dtype=np.float32)
-    }
-    personalized = {"a": _w([1.0, 1.0]), "b": _w([9.0, 9.0])}
-    prev = _w([0.0, 0.0])
-    fused = warm_start_from_neighbors("i", x_i, neighbor_feats, personalized, prev, delta=0.5)
-    # 가장 유사한 이웃은 'a'이고, δ=0.5 혼합 → 0.5 * prev + 0.5 * w_a = [0.5, 0.5]
-    assert torch.allclose(fused["w"], torch.tensor([0.5, 0.5]))
+
+def _state(value: float) -> dict[str, torch.Tensor]:
+    return {"weight": torch.tensor([value], dtype=torch.float32)}
+
+
+def test_transfer_excludes_self_and_handles_new_ue() -> None:
+    contexts = np.array([[1.0, 0.0], [1.0, 0.01], [0.0, 1.0], [0.01, 1.0]])
+    cells = np.array([0, 0, 1, 1])
+    current = [_state(0), _state(10), _state(20), _state(30)]
+    previous = [_state(4), _state(11), _state(22), _state(33)]
+    initialized, neighbors = transfer_initialize(
+        contexts,
+        cells,
+        current,
+        previous,
+        handover_indices=[0],
+        new_ue_indices=[2],
+        delta=0.25,
+    )
+    assert neighbors[0] == 1
+    assert initialized[0]["weight"].item() == pytest.approx(8.5)
+    assert neighbors[2] == 3
+    assert initialized[2]["weight"].item() == 30.0

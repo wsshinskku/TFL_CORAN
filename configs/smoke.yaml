@@ -1,0 +1,45 @@
+# CPU-only end-to-end validation profile. Not a paper result profile.
+seed: 7
+method: tfl_coran
+device: cpu
+
+environment:
+  cell_ue_counts: [4, 4, 4]
+  cell_labels: [urban, commercial, school]
+  episode_slots: 8
+  subbands: 3
+  max_ues_per_subband: 2
+
+agent:
+  hidden_dims: [32, 32]
+  batch_size: 4
+  replay_capacity: 128
+  warmup_steps: 4
+  target_update_episodes: 1
+  epsilon_decay_episodes: 2
+  gradient_steps_per_slot: 1
+
+vgae:
+  hidden_dim: 16
+  latent_dim: 4
+  epochs: 2
+  snapshots: 3
+  graph_neighbors: 2
+
+gmm:
+  clusters: 3
+  covariance_type: diag
+  max_iter: 20
+  n_init: 1
+
+federation:
+  episodes_per_round: 1
+  cluster_refresh_rounds: 1
+  handover_fraction: 0.25
+  new_ue_fraction: 0.0833333333
+
+experiment:
+  episodes: 2
+  evaluation_episodes: 1
+  adaptation_consecutive_slots: 1
+  checkpoint_every_rounds: 1

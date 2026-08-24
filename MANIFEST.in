@@ -1,0 +1,16 @@
+include MANIFEST.in
+include README.md README.en.md LICENSE CITATION.cff CHANGELOG.md MIGRATION.md VALIDATION.md
+include THIRD_PARTY_NOTICES.md CONTRIBUTING.md SECURITY.md
+include requirements.txt requirements-dev.txt pyproject.toml
+include .editorconfig .gitattributes .gitignore
+recursive-include configs *.yaml
+recursive-include docs *.md
+recursive-include paper_reported *.md *.csv
+recursive-include scripts *.py *.sh *.ps1
+recursive-include tests *.py
+recursive-include .github *.yml
+prune build
+prune .pytest_cache
+prune .ruff_cache
+prune src/tfl_coran.egg-info
+global-exclude *.py[cod]

@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite both this repository and the manuscript in preferred-citation."
+title: "TFL-CORAN: Complete Algorithmic Reproduction Toolkit"
+type: software
+version: 1.0.0
+date-released: 2026-08-19
+repository-code: "https://github.com/wsshinskku/TFL_CORAN"
+license: MIT
+authors:
+  - family-names: Shin
+    given-names: Wooseok
+    email: swsda95@skku.edu
+preferred-citation:
+  type: unpublished
+  title: "Transfer-enhanced Federated Learning with Dynamic Clustering for Traffic Management in 5G Open RAN"
+  authors:
+    - family-names: Shin
+      given-names: Wooseok
+    - family-names: Yang
+      given-names: Janghoon
+    - family-names: Shen
+      given-names: Zhiqiang
+    - family-names: Choi
+      given-names: Minseok
+    - family-names: Shin
+      given-names: Jitae
+  year: 2026
+  notes: "Manuscript under revision at Computer Communications."
