@@ -1,5 +1,5 @@
 include MANIFEST.in
-include README.md README.en.md LICENSE CITATION.cff CHANGELOG.md MIGRATION.md VALIDATION.md
+include README.md README.ko.md README.en.md LICENSE CITATION.cff CHANGELOG.md MIGRATION.md VALIDATION.md
 include THIRD_PARTY_NOTICES.md CONTRIBUTING.md SECURITY.md
 include requirements.txt requirements-dev.txt pyproject.toml
 include .editorconfig .gitattributes .gitignore

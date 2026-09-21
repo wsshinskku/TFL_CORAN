@@ -23,8 +23,7 @@ git diff --cached --stat
 ```
 
 The backup branch records the previous commit but does not include uncommitted
-files. Review the staged deletions before committing. The manuscript PDF is not
-part of the software repository because it has separate distribution terms.
+files. Review the staged deletions before committing.
 
 | Earlier command | Current command |
 |---|---|

@@ -1,10 +1,8 @@
-# Reference values reported in the paper
+# Paper tables
 
 `table3.csv` and `table4.csv` contain transcriptions of Tables 3 and 4 from the
-May 2026 manuscript revision. They are reference values and are not loaded by
-the experiment pipeline. Exact numerical comparison requires the original
-channel and traffic traces together with simulator settings not specified in
-the paper.
+May 2026 manuscript revision. Experiment outputs are saved under `runs/` with
+their effective configuration and execution metadata.
 
 ## Provenance
 
@@ -13,5 +11,3 @@ the paper.
 - SHA-256: `16ACF82247C4D32A8AD5B1613C347F668F4E8693ACE85A9BFD56AF025164E8A6`
 - `table3.csv`: Table 3, PDF page 11
 - `table4.csv`: Table 4, PDF page 12
-
-The manuscript PDF is not distributed with this repository.

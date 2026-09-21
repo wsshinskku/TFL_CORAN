@@ -1,4 +1,4 @@
-"""Compatibility entry point for the prototype repository's run command."""
+"""Compatibility entry point for the earlier run command."""
 
 from __future__ import annotations
 

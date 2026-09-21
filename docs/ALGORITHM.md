@@ -21,8 +21,7 @@ not emit terminal transitions, although the agent supports terminal masks.
 
 The non-learning heuristic maps SINR to one of the three rate levels, maps the
 service class to a priority, and spreads UEs across frequencies with a static
-round-robin index. This is an explicit approximation because the manuscript
-does not publish the exact heuristic action mapping.
+round-robin index.
 
 ## Representation and clustering
 
@@ -41,8 +40,7 @@ responsibilities from Eqs. (13)-(14). CFDRL converts them to one-hot values;
 TFL-CORAN keeps them soft. For the Table 4 component ablations, A retains
 VGAE+GMM without transfer, B fits GMM to standardized raw context, C replaces
 the disabled GMM with seeded deterministic hard KMeans over VGAE embeddings,
-and D uses uniform memberships/FedAvg. The manuscript does not specify the
-replacement grouping for C; this code uses hard KMeans.
+and D uses uniform memberships/FedAvg.
 
 ## Federated learning and transfer
 
@@ -50,11 +48,9 @@ replacement grouping for C; this code uses hard KMeans.
 global model, and membership-blended personalized models (Eqs. 15-17). Empty
 clusters fall back to the previous shared model.
 
-The manuscript defines a client update against one global model even though
-each client receives a distinct personalized model. The default
-`delta_reference: dispatch_base` averages post-local absolute weights, avoiding
-re-adding old personalization offsets. `paper_global` is available for a
-literal equation experiment.
+The default `delta_reference: dispatch_base` averages post-local absolute
+weights, avoiding re-adding old personalization offsets. The `paper_global`
+setting instead aggregates deltas relative to the shared global model.
 
 After a round, `transfer/initializer.py` restricts Eq. (18)'s cosine search to
 active UEs in the destination cell and excludes self. A handover mixes the

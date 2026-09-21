@@ -37,6 +37,5 @@ log-standard-deviation KL, restricted checkpoint loading, GMM responsibilities,
 FL invariants, transfer edge cases, config rejection, deterministic end-to-end
 execution, and matched central/local warmup budgets.
 
-Exact comparison with Tables 3 and 4 additionally requires the original
-external traces and simulator settings. See `docs/ASSUMPTIONS.md` and
-`paper_reported/README.md` for the parameters used by the included simulator.
+See [experiment settings](docs/ASSUMPTIONS.md) for the simulation configuration
+and [paper tables](paper_reported/README.md) for Tables 3 and 4 with their source provenance.

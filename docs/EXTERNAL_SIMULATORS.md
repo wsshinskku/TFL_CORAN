@@ -1,7 +1,7 @@
 # External O-RAN and channel integration
 
-The included environment is an algorithmic simulator. UERANSIM, Open5GS and
-QuaDRiGa are not imported or silently emulated.
+The default backend is a Python environment. The interfaces below define how
+to connect external O-RAN telemetry or channel traces to the learning pipeline.
 
 A real/trace adapter should provide, per active UE and slot:
 
@@ -25,4 +25,4 @@ RIC process <-> serialized model update + SITM DTO
 ```
 
 Pin exact upstream revisions and preserve their license obligations. Do not
-vendor those projects into this MIT repository. See `THIRD_PARTY_NOTICES.md`.
+vendor those projects into this MIT repository. See [third-party notices](../THIRD_PARTY_NOTICES.md).

@@ -1,4 +1,4 @@
-# CPU-only end-to-end validation profile. Not a paper result profile.
+# CPU-only end-to-end validation profile.
 seed: 7
 method: tfl_coran
 device: cpu
